@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask Me Map</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f7fa;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #333;
+    }
+
+    #chatContainer {
+      display: flex;
+      flex-direction: column;
+      background: white;
+      width: 90%;
+      max-width: 600px;
+      height: 80vh;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    #chatBox {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .user {
+      text-align: right;
+      color: #1976d2;
+    }
+
+    .bot {
+      text-align: left;
+      color: #444;
+    }
+
+    #inputArea {
+      display: flex;
+      padding: 10px;
+      background-color: #fafafa;
+    }
+
+    #msgInput {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    #sendBtn {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    #sendBtn:hover {
+      background-color: #155aa8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Ask Me Map</h1>
+  <div id="chatContainer">
+    <div id="chatBox"></div>
+    <div id="inputArea">
+      <input type="text" id="msgInput" placeholder="Type a message..." />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:3000");
+    const chatBox = document.getElementById("chatBox");
+    const input = document.getElementById("msgInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    ws.onmessage = (e) => {
+      const msg = document.createElement("div");
+      msg.className = "message bot";
+      msg.innerText = e.data;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    function sendMessage() {
+      const message = input.value.trim();
+      if (message) {
+        const msg = document.createElement("div");
+        msg.className = "message user";
+        msg.innerText = message;
+        chatBox.appendChild(msg);
+        ws.send(message);
+        input.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    input.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
