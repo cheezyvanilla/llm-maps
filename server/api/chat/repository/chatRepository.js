@@ -1,0 +1,30 @@
+import { httpRequest } from "../../../../utils/axios";
+
+export default async function askLLama(message) {
+  // ask LLM to return a json with location and intent
+
+  const response = await httpRequest({
+    method: "POST",
+    url: "/api/chat",
+    data: {
+      model: "llama3",
+      messages: [
+        {
+          role: "system",
+          content:
+            'You are an assistant that extracts structured data from user prompts. Return JSON with "intent" and "location". for the location, map it into one of these following place type: restaurant, cafe, bar, bakery, meal_takeaway, meal_delivery, supermarket, convenience_store, pharmacy, hospital, doctor, dentist, school, university, library, book_store, gym, spa, hair_care, beauty_salon, lodging, hotel, museum, art_gallery, park, zoo, aquarium, tourist_attraction, shopping_mall, clothing_store, shoe_store, electronics_store, home_goods_store, furniture_store, hardware_store, car_repair, car_rental, car_wash, gas_station, bank, atm, post_office, church, mosque, hindu_temple, synagogue, and night_club',
+        },
+        { role: "user", content: message },
+      ],
+      stream: false,
+    },
+  });
+  // parse JSON from model output
+  try {
+    const text = response.data.message.content.trim();
+    return JSON.parse(text);
+  } catch (err) {
+    console.error("Failed to parse JSON from LLM:", err);
+    return null;
+  }
+}

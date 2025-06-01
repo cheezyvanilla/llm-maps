@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 
 const instance = axios.create({
-  baseURL: process.env.API_BASE_URL || '', // optional: can override per request
+  baseURL: process.env.OLLAMA_BASE_URL || "", // optional: can override per request
   timeout: 10000, // 10 seconds
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -12,13 +12,19 @@ const instance = axios.create({
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error('Axios error:', error?.response?.data || error.message);
+    console.error("Axios error:", error?.response?.data || error.message);
     return Promise.reject(error);
   }
 );
 
 // Export a generic request wrapper
-export async function httpRequest({ method, url, data = null, params = null, headers = {} }) {
+export async function httpRequest({
+  method,
+  url,
+  data = null,
+  params = null,
+  headers = {},
+}) {
   const response = await instance.request({
     method,
     url,
