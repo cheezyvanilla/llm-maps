@@ -1,9 +1,9 @@
-import { httpRequest } from "../../../../utils/axios";
+import HttpClient from "../../../../utils/axios";
 
 export default async function askLLama(message) {
   // ask LLM to return a json with location and intent
-
-  const response = await httpRequest({
+  const httpClient = new HttpClient(process.env.OLLAMA_BASE_URL);
+  const response = await httpClient.request({
     method: "POST",
     url: "/api/chat",
     data: {
