@@ -1,14 +1,23 @@
-export default async function chatHandler(ws, message) {
+import ChatUsecase from "../usecase/chatUsecase.js";
+
+export default class ChatService {
+  constructor() {
+    this.usecase = new ChatUsecase();
+  }
+
+  async chatHandler(ws, message) {
     try {
-        let msg = message.toString()
+      let msg = message.toString();
 
-        console.log('Message received:', msg)
+      console.log("Message received:", msg);
 
-        // const reply = `🤖 Bot reply: You said "${msg}"`
-        const reply = 
-        ws.send(reply)
+      const reply = await this.usecase.processMessage(msg);
+      // const reply = `🤖 Bot reply: You said "${msg}"`
+      ws.send(reply);
     } catch (e) {
-        console.error(e)
-        ws.send('⚠️ Error processing your message.')
+      //   console.error(e);
+      console.error("Error processing message");
+      ws.send("⚠️ Error processing your message.");
     }
+  }
 }
