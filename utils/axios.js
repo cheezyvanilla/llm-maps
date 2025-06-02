@@ -4,10 +4,10 @@ class HttpClient {
   constructor(baseURL = "") {
     this.instance = axios.create({
       baseURL: baseURL, // Set from constructor parameter
-      timeout: 10000, // 10 seconds
-      headers: {
-        "Content-Type": "application/json",
-      },
+      timeout: 30000, // 10 seconds
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
     });
 
     // Add interceptors
@@ -21,6 +21,7 @@ class HttpClient {
   }
 
   async request({ method, url, data = null, params = null, headers = {} }) {
+    if (method !== "GET") headers["Content-Type"] = "application/json";
     const response = await this.instance.request({
       method,
       url,
