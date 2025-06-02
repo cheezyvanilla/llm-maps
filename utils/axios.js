@@ -4,7 +4,7 @@ class HttpClient {
   constructor(baseURL = "") {
     this.instance = axios.create({
       baseURL: baseURL, // Set from constructor parameter
-      timeout: 30000, // 30 seconds local ollama take so long to response
+      timeout: 10000, // 10 seconds local ollama take so long to response
       // headers: {
       //   "Content-Type": "application/json",
       // },

@@ -8,6 +8,7 @@ export default class ChatUsecase {
     try {
       // send msg to ollama
       const llmRes = await this.repo.askLLama(message);
+      if (!llmRes) return "No places found nearby.";
       const location = await this.repo.geocodeLocation(llmRes.location);
       let query = {
         lat: location.lat,
@@ -21,7 +22,7 @@ export default class ChatUsecase {
       return placesResponse;
     } catch (e) {
       console.error(e);
-      return null;
+      throw e;
     }
   }
 
